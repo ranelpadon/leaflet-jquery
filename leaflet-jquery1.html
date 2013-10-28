@@ -1,0 +1,24 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>  
+  </head>
+
+  <body>
+    <div id='map1' style='width:65%; height:500px; float:left;'></div>
+
+    <script type="text/javascript">
+      // create a map in the "map" div, set the view to a given place and zoom
+      var map1 = L.map('map1').setView([14, 121], 5);
+
+      // set the base map.
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map1);
+     
+      // add a marker in the given location, attach some popup content to it and open the popup
+      var p1 = L.marker([14, 121]);
+      p1.addTo(map1)
+        .bindPopup('My First Marker')	
+        .openPopup();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+
+    <script src="leaflet-providers.js"></script>
+
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+
+    <script type="text/javascript">
+      $( function() {
+        // Add the logic/behavior when searching the map by clicking the Search button.
+        $('input#Search_button').click( function() {
+          var zoom = $('#zoom').val();
+          var lat = $('#lat').val();
+          var lon = $('#lon').val();
+         
+          map1.setView([lat, lon], zoom);
+         
+          var p_search = L.marker([lat, lon]);
+          p_search.addTo(map1);   
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <input type='button' value="Search" id="Search_button">
+
+    Latitude: <input type='text' id='lat' style='width:80;' class="Search_text_fields">
+    Longitude: <input type='text' id='lon' style='width:80;' class="Search_text_fields">
+    Zoom Level: <input type='text' id='zoom' style='width:80;' class="Search_text_fields"> 
+
+    <div id='map1' style='width:65%; height:500px; float:left;'></div>
+
+    <script type="text/javascript">
+      // create a map in the "map" div, set the view to a given place and zoom
+      var map1 = L.map('map1').setView([14, 121], 5);
+
+
+      L.tileLayer.provider('MapQuestOpen.OSM').addTo(map1);
+
+      var p1 = L.marker([14, 121]);
+        p1.addTo(map1)
+        .bindPopup('My First Marker')
+        .openPopup();
+
+    </script>
+
+  </body>
+</html>
+    

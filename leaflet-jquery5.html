@@ -1,0 +1,153 @@
+<html>
+  <head>
+    <title>My jQuery Visions</title>
+
+    <link href='http://fonts.googleapis.com/css?family=PT+Serif' rel='stylesheet' type='text/css'>
+
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
+
+    <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
+
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/dot-luv/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script src="http://jqueryui.com//resources/demos/external/jquery.mousewheel.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+    <script src="leaflet-providers.js"></script>
+
+    <link rel="stylesheet" href="L.Control.MousePosition.css" />
+    <script src="L.Control.MousePosition.js"></script>
+
+    <link rel="stylesheet" href="L.Control.Zoomslider.css" />
+    <script src="L.Control.Zoomslider.js"></script>
+
+    <script type="text/javascript">
+      // make a container for a Search marker
+      // initially in undefined state.
+      // it needs to be outside of the Search's click function
+      // so that we could still see the previous Search marker before replacing it.
+      var p_search;
+
+      $(function () {
+        // Add decorations to the the Search and New Marker buttons.
+        $('input#Search_button, input#New_marker_button').button();
+      });
+
+      $(function () {
+        // Add decorations for the input text fields.
+        $('input.Search_text_fields').spinner();
+      });
+
+      $( function() {
+        // Add the logic/behavior when searching the map by clicking the Search button.
+        $('input#Search_button').click( function() {
+          var zoom = $('#zoom').val();
+          var lat = $('#lat').val();
+          var lon = $('#lon').val();          
+         
+          map1.setView([lat, lon], zoom);
+         
+          console.log("log1" + p_search);
+          // the initial state of p_search upon loading the map is undefined.
+
+          // if a previous Search marker has been found
+          // this is the preferred chcek compared to: 
+          // p_search !== undefined || p_search !== null
+          // p_search != null will also work
+          // typeof p_search != "undefined" will also work
+          if (p_search != undefined) {            
+            map1.removeLayer(p_search);
+          }
+
+          // add the Search marker
+          p_search = L.marker([lat, lon]);
+          p_search.addTo(map1);  
+          console.log("log2" + p_search); 
+        });
+      });
+
+      $(function (){
+        // Add the logic/behavior when adding a new marker by clicking the New Marker button.
+        $('input#New_marker_button').click( function(){
+          var zoom = $('#zoom').val();
+          var lat = $('#lat').val();
+          var lng = $('#lon').val();
+
+          var temp1 = L.marker([lat, lng], {icon:icons[count % 3], draggable:true});
+          temp1.addTo(map1)
+            .bindPopup('Marker No.' + (count+2))
+            .openPopup();
+
+          var temp2 = L.marker([lat, lng], {icon:icons[count % 3], draggable:true});
+          temp2.addTo(map2);
+
+          count++;
+          map1.setView([lat, lng], zoom);
+        });
+      });   
+    </script>
+  </head>
+
+  <body>
+    <h2 style='font-family:"PT Serif",serif;'>Welcome to the Perlas ng Silangan GeoPortal</h2>
+
+    <input type='button' value="Search" id="Search_button">
+
+    Latitude: <input type='text' id='lat' style='width:80;' class="Search_text_fields">
+    Longitude: <input type='text' id='lon' style='width:80;' class="Search_text_fields">
+    Zoom Level: <input type='text' id='zoom' style='width:80;' class="Search_text_fields">
+
+    <input type='button' value="New Marker" id="New_marker_button">  
+
+    <div style='height:10px;'></div>
+
+    <div id='map1' style='width:65%; height:500px; float:left;'></div>
+
+    <script type="text/javascript">
+      // create a map in the "map" div, set the view to a given place and zoom
+      var map1 = L.map('map1').setView([14, 121], 5);
+
+      L.tileLayer.provider('MapQuestOpen.OSM').addTo(map1);
+
+      var LeafIcon = L.Icon.extend({
+        options: {
+          shadowUrl: 'leaf-shadow.png',
+          iconSize:     [38, 95],
+          shadowSize:   [50, 64],
+          iconAnchor:   [22, 94],
+          shadowAnchor: [4, 62],
+          popupAnchor:  [-3, -76]
+        }
+      });
+
+      var greenIcon = new LeafIcon({iconUrl: 'leaf-green.png'});
+      var redIcon = new LeafIcon({iconUrl: 'leaf-red.png'});
+      var orangeIcon = new LeafIcon({iconUrl: 'leaf-orange.png'});
+
+      var icons = new Array();
+        icons[0] = greenIcon;
+        icons[1] = redIcon;
+        icons[2] = orangeIcon;
+
+      var count = 0;
+      // add a marker in the given location, attach some popup content to it and open the popup
+      var p1 = L.marker([14, 121], {icon: orangeIcon, draggable:true});
+      p1.addTo(map1)
+        .bindPopup('Marker No.' + (count+1))
+        .openPopup();
+
+      L.control.mousePosition().addTo(map1);
+      L.control.scale().addTo(map1);
+    </script>
+
+    <div id='map2' style='width:35%; height:500px;'></div>
+
+    <script type="text/javascript">
+      var map2 = L.map('map2').setView([12, 121], 5);
+      L.tileLayer.provider('MapQuestOpen.Aerial').addTo(map2);
+
+      var p2 = L.marker([14, 121], {icon: orangeIcon, draggable:true});
+      p2.addTo(map2);
+    </script>
+  </body>
+</html>
