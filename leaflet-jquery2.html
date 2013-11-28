@@ -1,5 +1,6 @@
 <html>
   <head>
+
     <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.5/leaflet.css" />
     <script src="http://cdn.leafletjs.com/leaflet-0.5/leaflet.js"></script>
 
@@ -8,35 +9,58 @@
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
 
     <script type="text/javascript">
+
+      // make a container for a Search marker
+      // initially in undefined state.
+      // it needs to be outside of the Search's click function
+      // so that we could still see the previous Search marker before replacing it.
+      var p_search;
+
       $( function() {
         // Add the logic/behavior when searching the map by clicking the Search button.
-        $('input#Search_button').click( function() {
+        $('input#search_button').click( function() {
           var zoom = $('#zoom').val();
           var lat = $('#lat').val();
           var lon = $('#lon').val();
-         
+
+          // provide a default zoom value, if zoom field is empty
+          if (zoom == "") {
+            zoom = 6;
+          }
+
+          // the initial state of p_search upon loading the map is undefined.
+          // if a previous Search marker has been found
+          // this is the preferred chcek compared to:
+          // p_search !== undefined || p_search !== null
+          // p_search != null will also work
+          // typeof p_search != "undefined" will also work
+          if (p_search != undefined) {
+            map1.removeLayer(p_search);
+          }
+
           map1.setView([lat, lon], zoom);
-         
-          var p_search = L.marker([lat, lon]);
-          p_search.addTo(map1);   
+
+          // add the new Search marker
+          p_search = L.marker([lat, lon]);
+          p_search.addTo(map1);
         });
       });
+
     </script>
   </head>
 
   <body>
-    <input type='button' value="Search" id="Search_button">
+    <input type='button' value="Search" id="search_button">
 
-    Latitude: <input type='text' id='lat' style='width:80;' class="Search_text_fields">
-    Longitude: <input type='text' id='lon' style='width:80;' class="Search_text_fields">
-    Zoom Level: <input type='text' id='zoom' style='width:80;' class="Search_text_fields"> 
+    Latitude: <input type='text' id='lat' style='width:80;' class="search_text_fields">
+    Longitude: <input type='text' id='lon' style='width:80;' class="search_text_fields">
+    Zoom Level: <input type='text' id='zoom' style='width:80;' class="search_text_fields">
 
     <div id='map1' style='width:65%; height:500px; float:left;'></div>
 
     <script type="text/javascript">
       // create a map in the "map" div, set the view to a given place and zoom
       var map1 = L.map('map1').setView([14, 121], 5);
-
 
       L.tileLayer.provider('MapQuestOpen.OSM').addTo(map1);
 
@@ -49,4 +73,4 @@
 
   </body>
 </html>
-    
+

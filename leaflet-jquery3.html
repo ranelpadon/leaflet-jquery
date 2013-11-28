@@ -8,23 +8,44 @@
     <script src="leaflet-providers.js"></script>
 
     <script type="text/javascript">
+      // make a container for a Search marker
+      // initially in undefined state.
+      // it needs to be outside of the Search's click function
+      // so that we could still see the previous Search marker before replacing it.
+      var p_search;
+
       $( function() {
         // Add the logic/behavior when searching the map by clicking the Search button.
-        $('input#Search_button').click( function() {
+        $('input#search_button').click( function() {
           var zoom = $('#zoom').val();
           var lat = $('#lat').val();
           var lon = $('#lon').val();
-         
+
+          // provide a default zoom value, if zoom field is empty
+          if (zoom == "") {
+            zoom = 6;
+          }
+
+          // the initial state of p_search upon loading the map is undefined.
+          // if a previous Search marker has been found
+          // this is the preferred chcek compared to:
+          // p_search !== undefined || p_search !== null
+          // p_search != null will also work
+          // typeof p_search != "undefined" will also work
+          if (p_search != undefined) {
+            map1.removeLayer(p_search);
+          }
+
           map1.setView([lat, lon], zoom);
-         
-          var p_search = L.marker([lat, lon]);
-          p_search.addTo(map1);   
+
+          p_search = L.marker([lat, lon]);
+          p_search.addTo(map1);
         });
       });
 
       $(function (){
         // Add the logic/behavior when adding a new marker by clicking the New Marker button.
-        $('input#New_marker_button').click( function(){
+        $('input#new_marker_button').click( function(){
           var zoom = $('#zoom').val();
           var lat = $('#lat').val();
           var lng = $('#lon').val();
@@ -37,18 +58,22 @@
           count++;
           map1.setView([lat, lng], zoom);
         });
-      }); 
+      });
+
+
+
     </script>
+
   </head>
 
   <body>
-    <input type='button' value="Search" id="Search_button">
+    <input type='button' value="Search" id="search_button">
 
-    Latitude: <input type='text' id='lat' style='width:80;' class="Search_text_fields">
-    Longitude: <input type='text' id='lon' style='width:80;' class="Search_text_fields">
-    Zoom Level: <input type='text' id='zoom' style='width:80;' class="Search_text_fields">
+    Latitude: <input type='text' id='lat' style='width:80;' class="search_text_fields">
+    Longitude: <input type='text' id='lon' style='width:80;' class="search_text_fields">
+    Zoom Level: <input type='text' id='zoom' style='width:80;' class="search_text_fields">
 
-    <input type='button' value="New Marker" id="New_marker_button">  
+    <input type='button' value="New Marker" id="new_marker_button">
 
     <div id='map1' style='width:65%; height:500px; float:left;'></div>
 
@@ -79,11 +104,14 @@
         icons[2] = orangeIcon;
 
       var count = 0;
+
       // add a marker in the given location, attach some popup content to it and open the popup
       var p1 = L.marker([14, 121], {icon: orangeIcon, draggable:true});
       p1.addTo(map1)
         .bindPopup('Marker No.' + (count+1))
         .openPopup();
+
+
     </script>
   </body>
 </html>
